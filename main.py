@@ -1,14 +1,16 @@
 import asyncio
 import logging
+import os
 
 from aiogram import Bot
 from aiogram.types import BotCommand
 from aiogram.dispatcher import Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import dotenv
 
 from bot.handlers.default import register_handlers_default
 
-
+dotenv.load_dotenv()
 logger = logging.getLogger("main")
 
 
@@ -29,7 +31,7 @@ async def main():
     )
     logger.info("Configuring...")
 
-    bot = Bot(token='1797855441:AAEg_EV-nURU5AxKKjRq_3DXygAFqLq87GY')
+    bot = Bot(token=os.getenv('TOKEN'))
     dp = Dispatcher(bot, storage=MemoryStorage())
 
     register_handlers_default(dp)
