@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import os
 
 from aiogram import Bot
@@ -9,9 +8,10 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 import dotenv
 
 from bot.handlers.default import register_handlers_default
+from bot.handlers.secondary import register_handlers_secondary
+from bot.handlers.logger import logger
 
 dotenv.load_dotenv()
-logger = logging.getLogger("main")
 
 
 async def set_commands(bot):
@@ -19,22 +19,19 @@ async def set_commands(bot):
         BotCommand(command="/start", description="Начать"),
         BotCommand(command="/help", description="Помощь"),
         BotCommand(command="/stop", description="Остановить"),
+        BotCommand(command="/get_logfile", description="Получить Logs (admin)"),
     ]
     await bot.set_my_commands(commands)
 
 
 async def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-        datefmt='%d/%m %H:%M:%S'
-    )
     logger.info("Configuring...")
-
+    
     bot = Bot(token=os.getenv('TOKEN'))
     dp = Dispatcher(bot, storage=MemoryStorage())
 
     register_handlers_default(dp)
+    register_handlers_secondary(dp)
 
     await set_commands(bot)
 
