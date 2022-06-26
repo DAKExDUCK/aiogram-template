@@ -2,6 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
+from bot.functions.functions import clear_MD
 from bot.functions.rights import is_admin
 
 
@@ -10,26 +11,27 @@ async def send_log(message: types.Message):
     with open('logs.log', 'r') as logs:
         await message.reply_document(logs)
 
+
 @is_admin
 async def forwarded_msg(message: types.Message):
     if message.is_forward:
         text = ""
         if message.forward_from_chat:
-            text += f"Chat id: `{message.forward_from_chat.id}`\n"
+            text += f"Chat id: `{clear_MD(message.forward_from_chat.id)}`\n"
         if message.forward_from:
             if message.forward_from.is_premium:
                 text += ":star:\n"
             if message.forward_from.is_bot:
                 text += "BOT\n"
-            text += f"User id: `{message.forward_from.id}`\n"
+            text += f"User id: `{clear_MD(message.forward_from.id)}`\n"
             if message.forward_from.full_name:
-                text += f"Full name: `{message.forward_from.full_name}`\n"
+                text += f"Full name: `{clear_MD(message.forward_from.full_name)}`\n"
             if message.forward_from.username:
-                text += f"Mention: @{message.forward_from.username}\n"
+                text += f"Mention: @{clear_MD(message.forward_from.username)}\n"
         if message.forward_sender_name:
-            text += f"Sender name: `{message.forward_sender_name}`\n"
+            text += f"Sender name: `{clear_MD(message.forward_sender_name)}`\n"
         if message.forward_from_message_id:
-            text += f"Msg id: `{message.forward_from_message_id}`\n"
+            text += f"Msg id: `{clear_MD(message.forward_from_message_id)}`\n"
         if len(text) > 0:
             try:
                 await message.reply(text, parse_mode='MarkdownV2')

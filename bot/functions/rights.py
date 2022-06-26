@@ -13,7 +13,7 @@ def is_admin(func):
     async def wrapper(*args, **kwargs):
         message: types.Message = args[0]
         if message.from_user.id in admin_list:
-            return func(*args, **kwargs)
+            return await func(*args, **kwargs)
         else:
             logger.debug('User is not admin')
             return await if_not_admin(*args, **kwargs)
