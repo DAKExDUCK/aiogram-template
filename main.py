@@ -19,6 +19,7 @@ async def set_commands(bot):
         BotCommand(command="/start", description="Начать"),
         BotCommand(command="/help", description="Помощь"),
         BotCommand(command="/stop", description="Остановить"),
+        BotCommand(command="/msg_to_admin", description="Написать сообщение админу"),
         BotCommand(command="/get_logfile", description="Получить Logs (admin)"),
     ]
     await bot.set_my_commands(commands)
