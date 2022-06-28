@@ -4,6 +4,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from bot.handlers.logger import print_msg
 from bot.keyboards.default import (add_delete_button)
+from bot.handlers.logger import logger
 
 
 @print_msg
@@ -26,8 +27,11 @@ async def help(message: types.Message):
 
 
 async def delete_msg(query: types.CallbackQuery):
+    await query.answer()
     try:
         await query.bot.delete_message(query.message.chat.id, query.message.message_id)
+        if query.message.reply_to_message:
+            await query.bot.delete_message(query.message.chat.id, query.message.reply_to_message.message_id)
     except:
         await query.answer("Error with deleting, message is too old")
 
