@@ -1,17 +1,19 @@
+from datetime import datetime
+import random
+
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-
-from bot.handlers.logger import print_msg
-from bot.keyboards.default import (add_delete_button)
-from bot.handlers.logger import logger
 from bot.functions.rights import admin_list
+from bot.handlers.logger import logger, print_msg
+from bot.keyboards.default import add_delete_button
+from bot.objects.chats import chat_store
 
 
 @print_msg
 async def start(message: types.Message, state: FSMContext):
     text = "Start message"
-    await message.reply(text, reply_markup=add_delete_button(None))
+    await message.reply(text, reply_markup=add_delete_button())
 
 
 @print_msg
@@ -29,9 +31,17 @@ async def help(message: types.Message):
 
 @print_msg
 async def msg_to_admin(message: types.Message):
-    await message.reply(f"Message to Admin `{admin_list[0]}`, "
+    admin_id = random.choice(admin_list)
+    msg = await message.reply(f"Message to Admin `{admin_id}`, "
                         f"reply to this message to send message",
                         parse_mode='MarkdownV2')
+    new_chat = {
+        'admin': admin_id,
+        'user': msg.reply_to_message.chat.id,
+        'date': datetime.now()
+    }
+    
+    chat_store[message.chat.id] = new_chat
 
 
 async def delete_msg(query: types.CallbackQuery):
