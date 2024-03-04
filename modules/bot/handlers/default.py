@@ -1,18 +1,18 @@
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 
-from ...logger import logger, print_msg
+from ...logger import Logger
 from ..keyboards.default import add_delete_button
 
 
-@print_msg
+@Logger.log_msg
 async def start(message: types.Message, state: FSMContext):
     text = "Start message"
     await message.reply(text, reply_markup=add_delete_button())
     await state.finish()
 
 
-@print_msg
+@Logger.log_msg
 async def help(message: types.Message):
     text = "Help message"
     await message.reply(text, reply_markup=add_delete_button())
@@ -25,7 +25,7 @@ async def delete_msg(query: types.CallbackQuery):
             await query.bot.delete_message(query.message.chat.id, query.message.reply_to_message.message_id)
         await query.answer()
     except Exception as exc:
-        logger.error(exc)
+        Logger.error(exc)
         await query.answer("Error")
 
 

@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Filter
 
 
-admin_list = [626591599]
+admin_list = [1072746639]
 
 
 def is_Admin(func):
@@ -17,11 +17,12 @@ def is_Admin(func):
 
 
 def is_admin(user_id):
-    return True if user_id in admin_list else False
+    return user_id in admin_list
 
 
 class IsAdmin(Filter):
     key = "is_admin"
 
-    async def check(self, message: types.Message):
+    async def check(self, *args):
+        message = args[0]
         return message.from_user.id in admin_list
