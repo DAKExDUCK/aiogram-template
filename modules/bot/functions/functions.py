@@ -1,7 +1,8 @@
+from typing import Any, Optional, Tuple
 from aiogram import types
 
 
-def clear_MD(text):
+def clear_MD(text: Any) -> str:
     text = str(text)
     symbols = ['_', '-', '*', '~', '[', ']', '(', ')', '`', '.']
 
@@ -10,8 +11,7 @@ def clear_MD(text):
 
     return text
 
-
-def get_info_from_forwarded_msg(message: types.Message):
+def get_info_from_forwarded_msg(message: types.Message) -> Tuple[str, Optional[int], Optional[str], Optional[str]]:
     user_id = None
     name = None
     mention = None

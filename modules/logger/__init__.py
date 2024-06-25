@@ -1,12 +1,15 @@
 import json
 import logging.config
 from functools import wraps
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping, Optional, TypeVar
 from aiogram import types
 
 
+T = TypeVar("T")
+
+
 class Logger:
-    _config_loaded = False
+    _config_loaded: bool = False
     _config: dict[str, Any] = {}
     logger: logging.Logger
 
@@ -25,13 +28,16 @@ class Logger:
             cls.logger = logging.getLogger("custom")
 
     @classmethod
-    def log_msg(cls, func) -> Callable[..., Any]:
+    def log_msg(cls, func: Callable[[Any], T]) -> Callable[..., Optional[T]]:
         @wraps(func)
-        def wrapper(*args, **kwargs) -> Any:
+        def wrapper(*args, **kwargs) -> T | None:
             arg: types.CallbackQuery | types.Message = args[0]
 
             if isinstance(arg, types.Message):
                 msg = arg
+                if msg.from_user is None:
+                    cls.info(f"None - {msg.text}")
+                    return
                 if msg.chat.id == msg.from_user.id:
                     cls.info(f"{msg.from_user.id} - {msg.text}")
                 else:
@@ -39,6 +45,8 @@ class Logger:
 
             elif isinstance(arg, types.CallbackQuery):
                 callback = arg
+                if callback.message is None:
+                    return
                 if callback.message.chat.id == callback.from_user.id:
                     cls.info(f"{callback.from_user.id} - {callback.data}")
                 else:
