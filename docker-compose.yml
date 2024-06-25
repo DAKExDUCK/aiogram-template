@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  aiogramtemplate:
+    image: amdRyzen5600X/aiogram-template:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment: 
+      TOKEN: "${TOKEN}"
+    ports:
+      - 42069:42069
