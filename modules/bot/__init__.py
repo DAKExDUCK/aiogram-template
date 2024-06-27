@@ -21,7 +21,7 @@ async def set_commands(bot: Bot) -> None:
 
 async def main(bot: Bot, dp: Dispatcher) -> None:
     Logger.info("Configuring...")
-    
+
     register_handlers_default(dp)
     register_handlers_admin(dp)
 

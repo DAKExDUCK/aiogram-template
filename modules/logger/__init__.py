@@ -1,6 +1,7 @@
 import json
-import logging.config
 from functools import wraps
+import logging
+import logging.config
 from typing import Any, Callable, Mapping, Optional, TypeVar
 from aiogram import types
 
@@ -52,26 +53,27 @@ class Logger:
                 else:
                     cls.info(f"{callback.from_user.id} / {callback.message.chat.id} - {callback.data}")
             return func(*args, **kwargs)
+
         return wrapper
 
     @classmethod
     def error(  # pylint: disable=arguments-differ, arguments-renamed
-              cls,
-              msg: object,
-              exc_info=None,
-              stack_info: bool = False,
-              stacklevel: int = 1,
-              extra: Mapping[str, object] | None = None,
+        cls,
+        msg: object,
+        exc_info=None,
+        stack_info: bool = False,
+        stacklevel: int = 1,
+        extra: Mapping[str, object] | None = None,
     ) -> None:
         cls.logger.error(msg=msg, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel, extra=extra)
 
     @classmethod
     def info(  # pylint: disable=arguments-differ, arguments-renamed
-             cls,
-             msg: object,
-             exc_info=None,
-             stack_info: bool = False,
-             stacklevel: int = 1,
-             extra: Mapping[str, object] | None = None,
+        cls,
+        msg: object,
+        exc_info=None,
+        stack_info: bool = False,
+        stacklevel: int = 1,
+        extra: Mapping[str, object] | None = None,
     ) -> None:
         cls.logger.info(msg=msg, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel, extra=extra)

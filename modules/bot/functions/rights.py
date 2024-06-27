@@ -17,6 +17,7 @@ def is_Admin(func: Callable[[Any], Awaitable[T]]) -> Callable[[Any], Awaitable[O
             return
         if message.from_user.id in admin_list:
             return await func(*args, **kwargs)
+
     return wrapper
 
 
@@ -27,7 +28,7 @@ def is_admin(user_id: int | str) -> bool:
 class IsAdmin(Filter):
     key = "is_admin"
 
-    async def check(self, *args) -> bool:
+    async def __call__(self, *args) -> bool:
         message: types.Message = args[0]
         if message.from_user is None:
             return False

@@ -6,8 +6,8 @@ def add_delete_button(kb: InlineKeyboardBuilder | None = None) -> InlineKeyboard
     if kb is None:
         kb = InlineKeyboardBuilder()
     del_btn = InlineKeyboardButton(
-            text='Delete', 
-            callback_data=f'delete',
+        text="Delete",
+        callback_data=f"delete",
     )
     kb.add(del_btn)
 

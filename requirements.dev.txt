@@ -1,4 +1,6 @@
 -r requirements.txt
+pytest==8.2.2
+pytest-asyncio==0.23.7
 black==24.3.0
 mypy==1.9.0
 pylint==3.1.0

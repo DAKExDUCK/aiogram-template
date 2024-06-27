@@ -4,12 +4,13 @@ from aiogram import types
 
 def clear_MD(text: Any) -> str:
     text = str(text)
-    symbols = ['_', '-', '*', '~', '[', ']', '(', ')', '`', '.']
+    symbols = ["_", "-", "*", "~", "[", "]", "(", ")", "`", "."]
 
     for sym in symbols:
         text = text.replace(sym, f"\{sym}")
 
     return text
+
 
 def get_info_from_forwarded_msg(message: types.Message) -> Tuple[str, Optional[int], Optional[str], Optional[str]]:
     user_id = None
