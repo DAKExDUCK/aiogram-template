@@ -1,20 +1,22 @@
-from aiogram import F, Dispatcher, types
+from aiogram import Dispatcher, F, types
 from aiogram.filters.command import Command
 
-from modules.logger import Logger
 from modules.bot.keyboards.default import add_delete_button
+from modules.logger import Logger
 
 
 @Logger.log_msg
 async def start(message: types.Message) -> None:
     text = "Start message"
     await message.reply(text, reply_markup=add_delete_button().as_markup())
+    return None
 
 
 @Logger.log_msg
-async def help(message: types.Message) -> None:
+async def help_handler(message: types.Message) -> None:
     text = "Help message"
     await message.reply(text, reply_markup=add_delete_button().as_markup())
+    return
 
 
 async def delete_msg(query: types.CallbackQuery) -> None:
@@ -34,7 +36,7 @@ async def delete_msg(query: types.CallbackQuery) -> None:
 
 def register_handlers_default(dp: Dispatcher) -> None:
     dp.message.register(start, Command("start"))
-    dp.message.register(help, Command("help"))
+    dp.message.register(help_handler, Command("help"))
 
     dp.callback_query.register(
         delete_msg,

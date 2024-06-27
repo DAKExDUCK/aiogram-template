@@ -1,5 +1,6 @@
 from aiogram import Dispatcher, types
 from aiogram.filters.command import Command
+
 from modules.bot.functions.rights import IsAdmin
 
 

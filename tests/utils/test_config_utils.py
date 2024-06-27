@@ -28,21 +28,3 @@ def test_get_from_env3():
 
     res = get_from_env(field_name, default=default)
     assert default == res
-
-
-def test_get_from_env5():
-    field_name = "test_var4"
-    value = "5"
-    default = 5
-    os.environ[field_name] = value
-
-    res = get_from_env(field_name, default=default, value_type=int)
-    assert int(value) == res
-
-
-def test_get_from_env6():
-    field_name = "test_var5"
-    default = 5
-
-    res = get_from_env(field_name, default=default, value_type=int)
-    assert default == res

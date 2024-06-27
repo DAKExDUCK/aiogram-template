@@ -1,9 +1,9 @@
+import dotenv
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
-import dotenv
 
-from modules.bot.handlers.default import register_handlers_default
 from modules.bot.handlers.admin import register_handlers_admin
+from modules.bot.handlers.default import register_handlers_default
 from modules.logger import Logger
 
 dotenv.load_dotenv()

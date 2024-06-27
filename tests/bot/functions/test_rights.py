@@ -1,9 +1,9 @@
 import datetime
-from aiogram.types import Chat, Message, MessageEntity, User
+
 import pytest
+from aiogram.types import Chat, Message, MessageEntity, User
 
 from modules.bot.functions.rights import IsAdmin, is_Admin, is_admin
-
 
 pytest_plugins = ("pytest_asyncio",)
 chat = Chat(
@@ -32,12 +32,12 @@ user_not_adm = User(
     language_code="en",
     is_premium=True,
 )
-out = "admin funtionality"
+OUT = "admin funtionality"
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("user,exp", [(user_adm, out), (user_not_adm, None)])
-async def test_is_Admin(user, exp):
+@pytest.mark.parametrize("user,exp", [(user_adm, OUT), (user_not_adm, None)])
+async def test_is_decorator_admin(user, exp):
     msg = Message(
         message_id=7,
         date=datetime.datetime(2024, 6, 27, 5, 28, 32, tzinfo=datetime.timezone.utc),
@@ -63,25 +63,27 @@ async def test_is_Admin(user, exp):
 
 
 @pytest.mark.parametrize(
-    "id, exp", [(user_adm.id, True), (user_not_adm, False), (str(user_adm.id), True), (str(user_not_adm), False)]
+    "user_id, exp", [(user_adm.id, True), (user_not_adm, False), (str(user_adm.id), True), (str(user_not_adm), False)]
 )
-def test_is_admin(id, exp):
-    assert is_admin(id) == exp
+def test_is_admin(user_id, exp):
+    assert is_admin(user_id) == exp
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("user,exp", [(user_adm, True), (user_not_adm, False)])
-async def test_IsAdmin(user, exp):
-    filter = IsAdmin()
-    msg = message(
+async def test_is_admin_filter(user, exp):
+    filter_is_admin = IsAdmin()
+    msg = Message(
         message_id=7,
         date=datetime.datetime(2024, 6, 27, 5, 28, 32, tzinfo=datetime.timezone.utc),
         chat=chat,
         from_user=user,
         text="/start",
         entities=[
-            messageentity(
-                type="bot_command", offset=0, length=6, url=none, user=none, language=none, custom_emoji_id=none
+            MessageEntity(
+                type="bot_command",
+                offset=0,
+                length=6,
             )
         ],
         forward_from=user,
@@ -89,4 +91,4 @@ async def test_IsAdmin(user, exp):
         forward_from_message_id=7,
         forward_sender_name="amd ryzen",
     )
-    assert await filter(msg) == exp
+    assert await filter_is_admin(msg) == exp

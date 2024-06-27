@@ -1,17 +1,14 @@
 import os
+from typing import TypeVar
 
-from modules.exceptions.config_exc import ConfigFieldIsRequired, ConfigFieldWrongType, T
+from modules.exceptions.config_exc import ConfigFieldIsRequired
+
+T = TypeVar("T")
 
 
-def get_from_env(field: str, default: T | None = None, value_type: type[T] = str) -> T:
+def get_from_env(field: str, default: T | None = None) -> T | str:
     value = os.getenv(field, default)
     if value is None:
         raise ConfigFieldIsRequired(field)
-
-    if isinstance(value, str):
-        try:
-            return value_type(value)
-        except Exception:
-            raise ConfigFieldWrongType(field, value, str(value_type))
 
     return value

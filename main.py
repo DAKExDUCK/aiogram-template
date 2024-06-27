@@ -4,7 +4,6 @@ import global_vars
 from modules.bot import main as start
 from modules.logger import Logger
 
-
 Logger.load_config()
 
 

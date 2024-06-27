@@ -1,10 +1,10 @@
 import datetime
-from aiogram import types
-import pytest
-
 from unittest.mock import AsyncMock
 
-from modules.bot.handlers.default import delete_msg, start, help
+import pytest
+from aiogram import types
+
+from modules.bot.handlers.default import delete_msg, help_handler, start
 from modules.logger import Logger
 
 
@@ -39,7 +39,7 @@ async def test_help():
 
     message_mock = AsyncMock(reply=mock_send_message)
 
-    await help(message_mock)
+    await help_handler(message_mock)
 
 
 @pytest.mark.asyncio
@@ -135,8 +135,11 @@ async def test_delete_msg_error():
         forward_sender_name="AMD RYZEN",
     )
 
+    class CustomExc(Exception):
+        pass
+
     async def mock_delete_message(_, __):
-        raise Exception()
+        raise CustomExc()
 
     async def answer_mock(msg):
         assert msg == "Error"
