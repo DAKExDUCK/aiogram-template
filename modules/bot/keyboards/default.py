@@ -1,11 +1,14 @@
-from aiogram import types
-from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup)
+from aiogram.types import InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def add_delete_button(kb: types.inline_keyboard = None):
+def add_delete_button(kb: InlineKeyboardBuilder | None = None) -> InlineKeyboardBuilder:
     if kb is None:
-        kb = InlineKeyboardMarkup()
-    del_btn = InlineKeyboardButton('Delete', callback_data=f'delete')
+        kb = InlineKeyboardBuilder()
+    del_btn = InlineKeyboardButton(
+        text="Delete",
+        callback_data=f"delete",
+    )
     kb.add(del_btn)
 
     return kb

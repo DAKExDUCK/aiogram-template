@@ -1,25 +1,79 @@
+import json
 import logging
+import logging.config
 from functools import wraps
+from typing import Any, Awaitable, Callable, Coroutine, Mapping, Optional, TypeVar
 
 from aiogram import types
 
-
-logging.basicConfig(filename="logs.log",
-                    filemode="w",
-                    format="%(asctime)s - %(levelname)s - %(message)s",
-                    datefmt='%d/%m %H:%M:%S',
-                    level=logging.INFO)
-logger = logging.getLogger()
+T = TypeVar("T")
 
 
-def print_msg(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        message: types.Message = args[0]
-        if message.chat.id == message.from_user.id:
-            logger.info(f"{message.from_user.id} - {message.text}")
-        else:
-            logger.info(
-                f"{message.from_user.id} / {message.chat.id} - {message.text}")
-        return func(*args, **kwargs)
-    return wrapper
+class Logger:
+    _config_loaded: bool = False
+    _config: dict[str, Any] = {}
+    logger: logging.Logger
+
+    @classmethod
+    def load_config(cls) -> None:
+        if not cls._config_loaded:
+            try:
+                with open("logger_config.json", "r", encoding="UTF-8") as config_file:
+                    cls._config = json.load(config_file)
+                    cls._config_loaded = True
+            except FileNotFoundError:
+                cls._config = {}
+            except json.JSONDecodeError:
+                print("Error: Invalid JSON format in config file")
+            logging.config.dictConfig(cls._config)
+            cls.logger = logging.getLogger("custom")
+
+    @classmethod
+    def log_msg(cls, func: Callable[[Any], Awaitable[T]]) -> Callable[[Any], Awaitable[Optional[T]]]:
+        @wraps(func)
+        async def wrapper(*args, **kwargs) -> T | None:
+            arg: types.CallbackQuery | types.Message = args[0]
+
+            if isinstance(arg, types.Message):
+                msg = arg
+                if msg.from_user is None:
+                    cls.info(f"None - {msg.text}")
+                    return None
+                if msg.chat.id == msg.from_user.id:
+                    cls.info(f"{msg.from_user.id} - {msg.text}")
+                else:
+                    cls.info(f"{msg.from_user.id} / {msg.chat.id} - {msg.text}")
+
+            elif isinstance(arg, types.CallbackQuery):
+                callback = arg
+                if callback.message is None:
+                    return None
+                if callback.message.chat.id == callback.from_user.id:
+                    cls.info(f"{callback.from_user.id} - {callback.data}")
+                else:
+                    cls.info(f"{callback.from_user.id} / {callback.message.chat.id} - {callback.data}")
+            return await func(*args, **kwargs)
+
+        return wrapper
+
+    @classmethod
+    def error(  # pylint: disable=arguments-differ, arguments-renamed
+        cls,
+        msg: object,
+        exc_info=None,
+        stack_info: bool = False,
+        stacklevel: int = 1,
+        extra: Mapping[str, object] | None = None,
+    ) -> None:
+        cls.logger.error(msg=msg, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel, extra=extra)
+
+    @classmethod
+    def info(  # pylint: disable=arguments-differ, arguments-renamed
+        cls,
+        msg: object,
+        exc_info=None,
+        stack_info: bool = False,
+        stacklevel: int = 1,
+        extra: Mapping[str, object] | None = None,
+    ) -> None:
+        cls.logger.info(msg=msg, exc_info=exc_info, stack_info=stack_info, stacklevel=stacklevel, extra=extra)
